@@ -5,7 +5,9 @@
   "main": "app.js",
   "scripts": {
     "start": "node app.js",
-    "dev": "node --watch app.js"
+    "dev": "node --watch app.js",
+    "build": "prisma generate",
+    "prisma:deploy": "prisma db push"
   },
   "engines": {
     "node": ">=20"
