@@ -1,0 +1,38 @@
+<%- include('partials/header') %>
+<main class="panel" style="max-width:none">
+  <div class="crumbs" style="margin-left:24px">
+    <a href="javascript:history.back()" aria-label="Back" style="text-decoration:none;color:var(--muted);font-size:26px">‹</a>
+    <a href="/">My Drive</a> <span>›</span>
+    <% if (file.folder_id) { %><a href="/folders/<%= file.folder_id %>"><%= file.folder_name %></a> <span>›</span><% } %>
+    <span class="current"><%= file.original_name %></span>
+  </div>
+  <div class="details-grid" style="margin-top:-24px">
+    <div class="preview">
+      <% if (isImageName(file.original_name)) { %>
+        <img src="/files/<%= file.id %>/view" alt="<%= file.original_name %>">
+      <% } else { %>
+        <svg width="120" height="120" viewBox="0 0 24 24" fill="none" stroke="#3d3d40" stroke-width="1.2"><path d="M6 2h8l5 5v15H6z"/><path d="M14 2v5h5"/></svg>
+      <% } %>
+    </div>
+
+    <div class="details">
+      <h2>File details</h2>
+      <dl>
+        <dt>Name</dt><dd><%= file.original_name %></dd>
+        <dt>Size</dt><dd><%= formatSize(file.size_bytes) %></dd>
+        <dt>Uploaded</dt><dd><%= formatDate(file.uploaded_at) %></dd>
+        <dt>Folder</dt><dd><%= file.folder_name || 'My Drive' %></dd>
+      </dl>
+      <div class="actions">
+        <a class="btn" href="/files/<%= file.id %>/download">
+          <span style="font-size:20px">⤓</span> Download
+        </a>
+        <form method="post" action="/files/<%= file.id %>/delete" data-confirm-title="Delete &ldquo;<%= file.original_name %>&rdquo;?" data-confirm-text="This file is removed from your drive. This can&rsquo;t be undone." data-confirm-action="Delete file">
+          <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+          <button class="btn btn-ghost" type="submit" style="color:var(--red)">Delete</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</main>
+<%- include('partials/footer') %>

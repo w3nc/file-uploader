@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title><%= locals.title ? title + " · Odin Drive" : "Odin Drive" %></title>
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="/">
+    <svg width="40" height="40" viewBox="0 0 40 40" aria-hidden="true">
+      <polygon points="10,20 15,11 25,11 30,20 25,29 15,29" fill="none" stroke="#0284c7" stroke-width="2.6" stroke-linejoin="round"/>
+    </svg>
+    Odin Drive
+  </a>
+  <% if (locals.topRight) { %>
+    <span class="topbar-note"><%= topRight %></span>
+  <% } else if (currentUser) { %>
+    <div class="who">
+      <span><%= currentUser.email %></span>
+      <form method="post" action="/logout">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+        <button class="btn btn-logout" type="submit">Log out</button>
+      </form>
+    </div>
+  <% } %>
+</header>

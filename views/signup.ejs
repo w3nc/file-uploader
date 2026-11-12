@@ -1,0 +1,31 @@
+<%- include('partials/header') %>
+<main class="card-auth">
+  <svg class="logo" width="56" height="56" viewBox="0 0 40 40" aria-hidden="true">
+    <polygon points="10,20 15,11 25,11 30,20 25,29 15,29" fill="none" stroke="#0284c7" stroke-width="2.6" stroke-linejoin="round"/>
+  </svg>
+  <h1>Create account</h1>
+  <p class="sub">to start storing files</p>
+
+  <form method="post" action="/signup" data-busy="Creating your account…">
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+    <div class="field">
+      <label for="email">Email</label>
+      <input type="email" id="email" name="email" value="<%= email %>" required autocomplete="email" data-rule="email">
+    </div>
+    <div class="field">
+      <label for="name">Name</label>
+      <input type="text" id="name" name="name" value="<%= name %>" required maxlength="100" autocomplete="name" data-rule="name">
+    </div>
+    <div class="field">
+      <label for="password">Password</label>
+      <input type="password" id="password" name="password" required minlength="8" autocomplete="new-password" data-rule="password" data-strength="1">
+      <p class="hint">At least 8 characters.</p>
+    </div>
+    <% if (error) { %><p class="error"><%= error %></p><% } %>
+    <div class="auth-actions">
+      <a href="/login">Sign in instead</a>
+      <button class="btn" type="submit">Sign up</button>
+    </div>
+  </form>
+</main>
+<%- include('partials/footer') %>

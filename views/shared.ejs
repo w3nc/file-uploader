@@ -1,0 +1,33 @@
+<%- include('partials/header') %>
+<div class="drive">
+  <%- include('partials/sidebar', { active: 'shared', usedBytes: usedBytes }) %>
+
+  <section class="main">
+    <h1 style="font-size:40px;margin-bottom:28px">Shared links</h1>
+
+    <% if (newId) { %>
+      <div class="new-link">
+        <strong style="font-weight:600">Link created.</strong> Copy it and send it to anyone:
+        <input type="text" readonly value="<%= baseUrl %>/share/<%= newId %>" id="newlink">
+        <button class="btn btn-small" style="margin-top:12px" type="button" data-copy="<%= baseUrl %>/share/<%= newId %>">Copy link</button>
+      </div>
+    <% } %>
+
+    <% if (!links.length) { %>
+      <p class="empty">No share links yet. Open the share icon on a folder in My Drive to make one.</p>
+    <% } %>
+
+    <% links.forEach(function (link) { %>
+      <div class="link-row">
+        <div class="folder">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#3d3d40" stroke-width="1.8"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+          <span><%= link.name %></span>
+        </div>
+        <span style="color:var(--muted)"><%= expiresText(link.days) %></span>
+        <span class="url"><%= baseUrl %>/share/<%= link.id %></span>
+        <button class="btn-outline btn btn-small" type="button" data-copy="<%= baseUrl %>/share/<%= link.id %>">Copy link</button>
+      </div>
+    <% }) %>
+  </section>
+</div>
+<%- include('partials/footer') %>

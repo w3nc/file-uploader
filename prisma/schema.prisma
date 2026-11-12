@@ -1,0 +1,76 @@
+// Prisma describes the database tables here. Run "npx prisma db push" to create them.
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           Int      @id @default(autoincrement())
+  email        String   @unique @db.VarChar(255)
+  name         String   @db.VarChar(100)
+  passwordHash String   @map("password_hash")
+  createdAt    DateTime @default(now()) @map("created_at")
+  folders      Folder[]
+  files        File[]
+  shares       Share[]
+
+  @@map("users")
+}
+
+model Folder {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    Int      @map("user_id")
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name      String   @db.VarChar(60)
+  createdAt DateTime @default(now()) @map("created_at")
+  files     File[]
+  shares    Share[]
+
+  @@index([userId], map: "folders_user_idx")
+  @@map("folders")
+}
+
+model File {
+  id           String   @id @default(uuid()) @db.Uuid
+  userId       Int      @map("user_id")
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  folderId     String?  @map("folder_id") @db.Uuid
+  folder       Folder?  @relation(fields: [folderId], references: [id], onDelete: Cascade)
+  originalName String   @map("original_name") @db.VarChar(255)
+  storedName   String   @map("stored_name") @db.VarChar(255)
+  cloudUrl     String   @map("cloud_url") @db.VarChar(500)
+  mimeType     String   @map("mime_type") @db.VarChar(100)
+  sizeBytes    Int      @map("size_bytes")
+  uploadedAt   DateTime @default(now()) @map("uploaded_at")
+
+  @@index([userId, folderId], map: "files_user_folder_idx")
+  @@map("files")
+}
+
+model Share {
+  id        String   @id @default(uuid()) @db.Uuid
+  userId    Int      @map("user_id")
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  folderId  String   @map("folder_id") @db.Uuid
+  folder    Folder   @relation(fields: [folderId], references: [id], onDelete: Cascade)
+  expiresAt DateTime @map("expires_at")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  @@index([folderId], map: "shares_folder_idx")
+  @@map("shares")
+}
+
+// Login sessions, used by the Prisma session store
+model Session {
+  id        String   @id @default(uuid())
+  sid       String   @unique
+  data      String
+  expiresAt DateTime
+
+  @@map("sessions")
+}

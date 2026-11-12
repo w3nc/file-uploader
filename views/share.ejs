@@ -1,0 +1,27 @@
+<%- include('partials/header') %>
+<main class="share-card">
+  <h1><%= folderName %></h1>
+
+  <% if (!files.length) { %>
+    <p class="empty">This folder is empty.</p>
+  <% } %>
+
+  <div class="share-files">
+    <% files.forEach(function (file) { %>
+      <a class="file-card" href="/share/<%= shareId %>/files/<%= file.id %>/download">
+        <div class="thumb">
+          <% if (isImageName(file.original_name)) { %>
+            <img src="/share/<%= shareId %>/files/<%= file.id %>/view" alt="<%= file.original_name %>" loading="lazy">
+          <% } else { %>
+            <span class="type-badge"><%= formatType(file.original_name) || 'FILE' %></span>
+          <% } %>
+        </div>
+        <div class="meta">
+          <strong><%= file.original_name %></strong>
+          <span><%= formatType(file.original_name) %> · <%= formatSize(file.size_bytes) %></span>
+        </div>
+      </a>
+    <% }) %>
+  </div>
+</main>
+<%- include('partials/footer') %>

@@ -1,0 +1,31 @@
+<% /* Left side: New button and the menu, the nav links and the storage bar */ %>
+<aside class="sidebar">
+  <details class="new-menu">
+    <summary><span style="font-size:26px;line-height:1">+</span> New</summary>
+    <div class="menu">
+      <form method="post" action="/folders" data-busy="Creating…">
+        <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+        <input type="text" name="name" placeholder="Folder name" maxlength="60" required data-rule="folder">
+        <button class="btn btn-small" type="submit">New folder</button>
+      </form>
+      <a href="/upload">File upload</a>
+    </div>
+  </details>
+
+  <nav class="sidebar-nav">
+    <a href="/" class="<%= active === 'drive' ? 'active' : '' %>">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+      My Drive
+    </a>
+    <a href="/shared" class="<%= active === 'shared' ? 'active' : '' %>">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10 13a5 5 0 0 0 7 0l3-3a5 5 0 0 0-7-7l-1 1"/><path d="M14 11a5 5 0 0 0-7 0l-3 3a5 5 0 0 0 7 7l1-1"/></svg>
+      Shared links
+    </a>
+  </nav>
+
+  <% const quota = 15 * 1024 * 1024 * 1024; const used = locals.usedBytes || 0; %>
+  <div class="storage">
+    <div class="storage-bar"><span style="width: <%= Math.max(1, Math.min(100, used / quota * 100)).toFixed(1) %>%"></span></div>
+    <p><%= formatSize(used) %> of 15 GB used</p>
+  </div>
+</aside>

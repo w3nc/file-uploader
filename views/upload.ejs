@@ -1,0 +1,40 @@
+<%- include('partials/header') %>
+<main class="dialog-card">
+  <h1>Upload file</h1>
+  <form method="post" action="/upload" enctype="multipart/form-data" data-busy="Uploading to cloud…">
+    <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+
+    <div class="field">
+      <label for="folder">Folder</label>
+      <select id="folder" name="folder">
+        <option value="" <%= selected === '' ? 'selected' : '' %>>My Drive</option>
+        <% folders.forEach(function (f) { %>
+          <option value="<%= f.id %>" <%= selected === f.id ? 'selected' : '' %>><%= f.name %></option>
+        <% }) %>
+      </select>
+    </div>
+
+    <label class="dropzone" for="file">
+      <input type="file" id="file" name="file" accept=".png,.jpg,.jpeg,.pdf,.txt" required data-rule="file" data-max="5242880" data-types=".png,.jpg,.jpeg,.pdf,.txt">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#3d3d40" stroke-width="2"><path d="M12 16V4M6 10l6-6 6 6M4 20h16"/></svg>
+      <span class="big">Choose a file</span>
+      <span class="small">PNG, JPG, PDF or TXT · up to 5 MB</span>
+      <span class="picked" id="picked"></span>
+    </label>
+
+    <% if (error) { %><p class="error"><%= error %></p><% } %>
+
+    <div class="actions">
+      <a href="/" class="btn-ghost" style="text-decoration:none">Cancel</a>
+      <button class="btn" type="submit">Upload</button>
+    </div>
+  </form>
+</main>
+<script>
+  // Shows the chosen file name under the box
+  document.getElementById("file").addEventListener("change", function (e) {
+    var f = e.target.files[0];
+    document.getElementById("picked").textContent = f ? f.name : "";
+  });
+</script>
+<%- include('partials/footer') %>

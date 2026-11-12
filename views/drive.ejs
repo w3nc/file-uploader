@@ -1,0 +1,101 @@
+<%- include('partials/header') %>
+<div class="drive">
+  <%- include('partials/sidebar', { active: 'drive', usedBytes: usedBytes }) %>
+
+  <section class="main">
+    <% if (locals.error) { %><p class="error"><%= error %></p><% } %>
+    <% if (folder) { %>
+      <div class="crumbs">
+        <a href="/">My Drive</a> <span>›</span> <span class="current"><%= folder.name %></span>
+      </div>
+    <% } %>
+
+    <% if (!folder) { %>
+      <% const hr = new Date().getHours(); const hi = hr < 12 ? 'Good morning' : hr < 18 ? 'Good afternoon' : 'Good evening'; %>
+      <p class="greeting"><%= hi %>, <%= currentUser ? currentUser.email.split('@')[0] : 'there' %></p>
+    <% } %>
+    <div class="main-head">
+      <h1><%= folder ? folder.name : 'My Drive' %></h1>
+      <div class="head-actions">
+        <a class="btn btn-outline" href="/upload<%= folder ? '?folder=' + folder.id : '' %>">
+          <span style="font-size:22px;line-height:1">↑</span> Upload file
+        </a>
+      </div>
+    </div>
+
+    <% if (!folder) { %>
+      <h3 class="section-label">Folders</h3>
+      <div class="folder-row">
+        <% folders.forEach(function (f) { %>
+          <div class="folder-tile">
+            <a class="folder-head" href="/folders/<%= f.id %>">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>
+              <span class="name"><%= f.name %></span>
+            </a>
+
+            <div class="folder-actions">
+            <details>
+              <summary class="icon-btn" title="Share">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="M8.6 13.5l6.8 4M15.4 6.5l-6.8 4"/></svg>
+              </summary>
+              <form class="pop" method="post" action="/folders/<%= f.id %>/share">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                <p style="margin:0 0 10px;font-size:17px">Share “<%= f.name %>”</p>
+                <p style="margin:0 0 6px;color:var(--muted);font-size:15px">Anyone with the link can view this folder and everything in it.</p>
+                <label>Link expires after</label>
+                <div class="pills">
+                  <label><input type="radio" name="days" value="1"><span>1d</span></label>
+                  <label><input type="radio" name="days" value="10" checked><span>10d</span></label>
+                  <label><input type="radio" name="days" value="30"><span>30d</span></label>
+                </div>
+                <button class="btn btn-small" type="submit">Copy link</button>
+              </form>
+            </details>
+
+            <details>
+              <summary class="icon-btn" title="Rename">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20h4L19 9l-4-4L4 16z"/></svg>
+              </summary>
+              <form class="pop" method="post" action="/folders/<%= f.id %>/rename" data-busy="Saving…">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                <input type="text" name="name" value="<%= f.name %>" maxlength="60" required data-rule="folder">
+                <button class="btn btn-small" style="margin-top:10px" type="submit">Save</button>
+              </form>
+            </details>
+
+              <form method="post" action="/folders/<%= f.id %>/delete" data-confirm-title="Delete the folder &ldquo;<%= f.name %>&rdquo;?" data-confirm-text="Every file inside it is removed too. This can&rsquo;t be undone." data-confirm-action="Delete folder">
+                <input type="hidden" name="_csrf" value="<%= csrfToken %>">
+                <button class="icon-btn" title="Delete" type="submit">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 7h16M9 7V4h6v3M6 7l1 13h10l1-13"/></svg>
+                </button>
+              </form>
+            </div>
+          </div>
+        <% }) %>
+      </div>
+      <% if (!folders.length) { %><p class="empty">No folders yet. Use New to make one.</p><% } %>
+    <% } %>
+
+    <h3 class="section-label">Files</h3>
+    <div class="file-row">
+      <% files.forEach(function (file) { %>
+        <a class="file-card" href="/files/<%= file.id %>">
+          <div class="thumb">
+            <% if (isImageName(file.original_name)) { %>
+              <img src="/files/<%= file.id %>/view" alt="<%= file.original_name %>" loading="lazy">
+            <% } else { %>
+              <span class="type-badge"><%= formatType(file.original_name) || 'FILE' %></span>
+            <% } %>
+          </div>
+          <div class="meta">
+            <strong><%= file.original_name %></strong>
+            <span><%= formatType(file.original_name) %> · <%= formatSize(file.size_bytes) %></span>
+          </div>
+        </a>
+      <% }) %>
+    </div>
+    <% if (!files.length) { %><p class="empty">No files here yet.</p><% } %>
+    <a class="fab" href="/upload<%= folder ? '?folder=' + folder.id : '' %>" title="Upload file">↑</a>
+  </section>
+</div>
+<%- include('partials/footer') %>

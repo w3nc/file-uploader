@@ -1,0 +1,31 @@
+{
+  "name": "odin-drive",
+  "version": "1.0.0",
+  "description": "Odin Drive: a file uploader with folders, sign-in and share links",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "dev": "node --watch app.js"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "license": "MIT",
+  "private": true,
+  "dependencies": {
+    "@prisma/client": "^6.19.3",
+    "@quixo3/prisma-session-store": "^3.1.21",
+    "bcryptjs": "^3.0.2",
+    "cloudinary": "^2.11.0",
+    "dotenv": "^16.4.5",
+    "ejs": "^3.1.10",
+    "express": "^5.1.0",
+    "express-session": "^1.18.2",
+    "multer": "^2.0.2",
+    "passport": "^0.7.0",
+    "passport-local": "^1.0.0"
+  },
+  "devDependencies": {
+    "prisma": "^6.19.3"
+  }
+}
